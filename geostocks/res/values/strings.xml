@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<color name="background"> #3B3B3B </color>
+    <string name="app_name">geostocks</string>
+    <string name="edit_message">Enter company name <font fgcolor="#00A0B1"> default color</font></string>
+    <string name="button_send">Send</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_main">MainActivity</string>
+    
+</resources>
