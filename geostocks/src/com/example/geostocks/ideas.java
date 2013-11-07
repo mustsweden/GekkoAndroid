@@ -11,6 +11,8 @@ package com.example.geostocks;
 */
 
 
+
+
 public class ideas {
 
 }
