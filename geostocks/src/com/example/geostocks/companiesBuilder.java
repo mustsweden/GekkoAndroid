@@ -31,8 +31,6 @@ public class companiesBuilder {
 	private String symbol;
 	private String percent;
 	private String change;
-	private String title;
-	private String subtitle;
 	private int image;
 
 	public companiesBuilder(JSONObject job) {
@@ -83,13 +81,5 @@ public class companiesBuilder {
 
 	public int getImage() {
 		return image;
-	}
-
-	public String getTitle() {
-		return title;
-	}
-
-	public String getSubtitle() {
-		return subtitle;
 	}
 }

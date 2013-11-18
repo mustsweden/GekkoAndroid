@@ -53,7 +53,7 @@ public class companiesAdapter extends ArrayAdapter<companiesBuilder> {
 			rowItem.subTitleView_right
 					.setTextColor(Color.parseColor("#E51400"));
 			rowItem.subTitleView_right.setText(company.getPercent() + "%" + " "
-					+ "( -" + company.getChange() + ")");
+					+ "( " + company.getChange() + ")");
 		} else if (Double.parseDouble(company.getChange()) > 0) {
 			rowItem.subTitleView_right
 					.setTextColor(Color.parseColor("#339933"));

@@ -7,8 +7,6 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.URL;
 import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.HashMap;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -20,11 +18,16 @@ import org.json.JSONObject;
  */
 
 public class JSONparser {
+	/*
+	 * Create static instancevariables and instansiate them with null.
+	 */
 	static InputStream is = null;
 	static JSONObject jObj = null;
 	static String json = "";
-	public ArrayList<HashMap<String, String>> contactList;
 
+	/*
+	 * Takes a search string and looks up the webservice for any JSONArray that
+	 */
 	public JSONArray search(String search) {
 		try {
 			return readJson("http://dev.semprog.se/Gekko.svc/Search/" + search);
@@ -66,6 +69,20 @@ public class JSONparser {
 	public JSONArray topCompanies() {
 		try {
 			return readJson("http://dev.semprog.se/Gekko.svc/GetTop/10");
+		} catch (JSONException e) {
+			e.printStackTrace();
+			return null;
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	public JSONArray getHistory(String symbol, String start, String end) {
+		try {
+			return readJson("http://dev.semprog.se/Gekko.svc/GetDaily/"
+					+ symbol + "/" + start + "/" + end);
 		} catch (JSONException e) {
 			e.printStackTrace();
 			return null;
