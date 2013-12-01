@@ -30,7 +30,7 @@ import android.widget.SearchView;
  * 				multiple classes to help making coding and efficiency more easier.
  */
 public class MainActivity extends Activity {
-
+	public static ArrayList<String> checkedCompanies = new ArrayList<String>();
 	public Menu m; // Variable to store a menu-item as a public variable.
 					// This helps with data allocation; instead of declaring the
 					// searchview and searchmanager in the creation of the
@@ -40,7 +40,6 @@ public class MainActivity extends Activity {
 
 	// an array to store all jsonobjects in.
 	private JSONArray companies;
-
 	// an arraylist to store multiple companyobjects created later.
 	private List<companiesBuilder> allCompanies = new ArrayList<companiesBuilder>();
 
@@ -76,7 +75,7 @@ public class MainActivity extends Activity {
 		final ListView companyList = (ListView) findViewById(R.id.listView);
 		final companiesAdapter compAdp = new companiesAdapter(this,
 				R.layout.listview_layout);
-		companyList.setAdapter(compAdp);
+
 		System.out.println("after"); // debugging
 		/*
 		 * a loop to create companyBuilder-objects from the JSONArray and then
@@ -101,9 +100,11 @@ public class MainActivity extends Activity {
 		 * to the custom listview adapter.
 		 */
 
-		for (final companiesBuilder built : allCompanies) {
+		for (companiesBuilder built : allCompanies) {
 			compAdp.add(built);
 		}
+
+		companyList.setAdapter(compAdp);
 	}
 
 	/*

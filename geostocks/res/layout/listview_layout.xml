@@ -4,7 +4,7 @@
      Listview layout.
 	 Made by: Joakim Bajoul Kakaei (881129-0298)
 	 Description: A layoutfile which creates the custum layout for the listview
-	 which is used multiple times in the app.
+	 which is used multiple times in the app.
 -->
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -14,15 +14,17 @@
 
     <!--
           Two images are added to the layout and will be invoked depending on 
-    	  the stock's changeprice and value (increase or decrease)
+    	  the stock's changeprice and value (increase or decrease)
     -->
 
-    <ImageView
-        android:id="@+id/icon"
+    <ImageButton
+        android:id="@+id/add_button"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:contentDescription="@string/hello_world"
-        android:src="@drawable/ic_launcher" />
+        android:gravity="right"
+        android:background="@null"
+        android:src="@drawable/selector_help"/>"
 
     <!-- Set up the listview's textview layout -->
 

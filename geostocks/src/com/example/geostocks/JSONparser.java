@@ -5,7 +5,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.nio.charset.Charset;
 
 import org.json.JSONArray;
@@ -30,15 +33,20 @@ public class JSONparser {
 	 */
 	public JSONArray search(String search) {
 		try {
+			URLEncoder.encode(search, "UTF-8");
+			System.out.println("SEARCH "
+					+ "http://dev.semprog.se/Gekko.svc/Search/" + search);
 			return readJson("http://dev.semprog.se/Gekko.svc/Search/" + search);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			return null;
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			return null;
 		}
-		return null;
+
 	}
 
 	private static String readAll(Reader rd) throws IOException {
@@ -53,12 +61,15 @@ public class JSONparser {
 
 	private static JSONArray readJson(String search) throws IOException,
 			JSONException {
+		System.out.println("BIGSEARCH " + search);
+		InputStream is = new URL(search.replace(" ", "%20")).openStream();
 
-		InputStream is = new URL(search).openStream();
 		try {
+
 			BufferedReader rd = new BufferedReader(new InputStreamReader(is,
 					Charset.forName("UTF-8")));
 			String jsonText = readAll(rd);
+			System.out.println("JSONTEXT " + jsonText);
 			JSONArray json = new JSONArray(jsonText);
 			return json;
 		} finally {
@@ -79,17 +90,27 @@ public class JSONparser {
 		}
 	}
 
-	public JSONArray getHistory(String symbol, String start, String end) {
+	public JSONObject details(String symbol) throws IOException {
+		symbol = "http://dev.semprog.se/Gekko.svc/GetInfo/" + symbol;
+		InputStream is = new URL(symbol).openStream();
 		try {
-			return readJson("http://dev.semprog.se/Gekko.svc/GetDaily/"
-					+ symbol + "/" + start + "/" + end);
+			BufferedReader rd = new BufferedReader(new InputStreamReader(is,
+					Charset.forName("UTF-8")));
+			String jsonText = readAll(rd);
+			System.out.println("JSONTEXT " + jsonText);
+			JSONObject json = new JSONObject(jsonText);
+			return json;
 		} catch (JSONException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return null;
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return null;
+		} finally {
+			is.close();
 		}
 	}
+
 }

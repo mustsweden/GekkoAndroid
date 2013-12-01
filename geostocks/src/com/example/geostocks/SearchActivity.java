@@ -1,5 +1,6 @@
 package com.example.geostocks;
 
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -12,12 +13,15 @@ import android.app.SearchManager;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.widget.ListView;
 
 public class SearchActivity extends Activity {
 	JSONArray companies;
 	String query;
+
 	private List<companiesBuilder> allCompanies = new ArrayList<companiesBuilder>();
+	companiesAdapter compAdp;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -44,9 +48,7 @@ public class SearchActivity extends Activity {
 		 */
 
 		final ListView companyList = (ListView) findViewById(R.id.listView_search);
-		final companiesAdapter compAdp = new companiesAdapter(this,
-				R.layout.listview_layout);
-		companyList.setAdapter(compAdp);
+		compAdp = new companiesAdapter(this, R.layout.listview_layout);
 		System.out.println("after"); // debugging
 		/*
 		 * a loop to create companyBuilder-objects from the JSONArray and then
@@ -71,9 +73,32 @@ public class SearchActivity extends Activity {
 		 * to the custom listview adapter.
 		 */
 
-		for (final companiesBuilder built : allCompanies) {
+		for (companiesBuilder built : allCompanies) {
+			for (int i = 0; i < MainActivity.checkedCompanies.size(); i++) {
+				System.out.println("CHECKED"
+						+ MainActivity.checkedCompanies.get(i));
+				if (MainActivity.checkedCompanies.get(i).equals(
+						built.getSymbol())) {
+					built.setSelect(true);
+				}
+			}
 			compAdp.add(built);
 		}
+		companyList.setAdapter(compAdp);
+	}
+
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		if (keyCode == KeyEvent.KEYCODE_BACK) {
+			super.onBackPressed();
+			System.out.println(checkedCompanies.INSTANCE.get().size());
+			System.out.println("BACK PRESSED!");
+			for (int i = 0; i < checkedCompanies.INSTANCE.get().size(); i++) {
+				System.out.println("CHECKED      "
+						+ checkedCompanies.INSTANCE.get().get(i).getName());
+			}
+		}
+		return true;
 	}
 
 	@Override
@@ -95,7 +120,9 @@ public class SearchActivity extends Activity {
 		@Override
 		protected JSONArray doInBackground(String... params) {
 			JSONparser jparser = new JSONparser();
+
 			companies = jparser.search(query);
+
 			System.out.println("background"); // debugging
 			return companies;
 		}
