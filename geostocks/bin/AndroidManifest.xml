@@ -28,7 +28,7 @@
                 android:name="android.app.default_searchable"
                 android:value=".SearchActivity" />
         </activity>
-´
+´
         <activity
             android:name="com.example.geostocks.SearchActivity"
             android:label="@string/SearchActivityName"
@@ -44,6 +44,10 @@
         <activity
             android:name="com.example.geostocks.CompanyDetails"
             android:label="@string/title_activity_company_details" >
+        </activity>
+        <activity
+            android:name="com.example.geostocks.Compare"
+            android:label="@string/title_activity_compare" >
         </activity>
     </application>
 

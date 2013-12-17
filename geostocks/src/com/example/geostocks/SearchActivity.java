@@ -1,6 +1,5 @@
 package com.example.geostocks;
 
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -13,12 +12,31 @@ import android.app.SearchManager;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.view.KeyEvent;
+import android.view.GestureDetector.OnGestureListener;
+import android.view.View.OnTouchListener;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
+import android.view.View;
 import android.widget.ListView;
 
-public class SearchActivity extends Activity {
+/*
+ * SearchActivity:
+ * 
+ * Written By: Joakim Bajoul Kakaei (881129-0298)
+ * 
+ * Description: Handles the searchesqueries that MainActivity sends to it by using AsyncTask.
+ * It also sets up a listview with correct items by recycling the adapter class.
+ * This activiy also uses the gesturedetector to handle flings in the same fashion as main.
+ */
+public class SearchActivity extends Activity implements OnGestureListener {
 	JSONArray companies;
 	String query;
+	GestureDetector detector;
+	/*
+	 * Handle the threshold.
+	 */
+	private static final int SWIPE_THRESHOLD = 100;
+	private static final int SWIPE_VELOCITY_THRESHOLD = 100;
 
 	private List<companiesBuilder> allCompanies = new ArrayList<companiesBuilder>();
 	companiesAdapter compAdp;
@@ -28,6 +46,7 @@ public class SearchActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_search);
 		handleIntent(getIntent());
+		detector = new GestureDetector(this, this);
 		try {
 			/*
 			 * executes the AsyncTask (top10). When the task is executed, it
@@ -49,17 +68,12 @@ public class SearchActivity extends Activity {
 
 		final ListView companyList = (ListView) findViewById(R.id.listView_search);
 		compAdp = new companiesAdapter(this, R.layout.listview_layout);
-		System.out.println("after"); // debugging
 		/*
 		 * a loop to create companyBuilder-objects from the JSONArray and then
 		 * add those objects to an ArrayList (allCompanies).
 		 */
 		for (int i = 0; companies.length() > i; i++) {
-			System.out.println("companies-looper"); // debugging
-
-			System.out.println(companies.length()); // debugging
 			try {
-				System.out.println(companies.getJSONObject(i)); // debugging
 				allCompanies.add(new companiesBuilder(companies
 						.getJSONObject(i)));
 			} catch (JSONException e) {
@@ -75,8 +89,6 @@ public class SearchActivity extends Activity {
 
 		for (companiesBuilder built : allCompanies) {
 			for (int i = 0; i < MainActivity.checkedCompanies.size(); i++) {
-				System.out.println("CHECKED"
-						+ MainActivity.checkedCompanies.get(i));
 				if (MainActivity.checkedCompanies.get(i).equals(
 						built.getSymbol())) {
 					built.setSelect(true);
@@ -85,20 +97,13 @@ public class SearchActivity extends Activity {
 			compAdp.add(built);
 		}
 		companyList.setAdapter(compAdp);
-	}
-
-	@Override
-	public boolean onKeyDown(int keyCode, KeyEvent event) {
-		if (keyCode == KeyEvent.KEYCODE_BACK) {
-			super.onBackPressed();
-			System.out.println(checkedCompanies.INSTANCE.get().size());
-			System.out.println("BACK PRESSED!");
-			for (int i = 0; i < checkedCompanies.INSTANCE.get().size(); i++) {
-				System.out.println("CHECKED      "
-						+ checkedCompanies.INSTANCE.get().get(i).getName());
+		companyList.setOnTouchListener(new OnTouchListener() {
+			@Override
+			public boolean onTouch(View view, MotionEvent e) {
+				detector.onTouchEvent(e);
+				return false;
 			}
-		}
-		return true;
+		});
 	}
 
 	@Override
@@ -110,11 +115,17 @@ public class SearchActivity extends Activity {
 
 		if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
 			query = intent.getStringExtra(SearchManager.QUERY);
-			System.out.println(query);
 			// use the query to search your data somehow
 		}
 	}
 
+	/*
+	 * searchList: Written By: Joakim Bajoul Kakaei (881129-0298)
+	 * 
+	 * Description: Opens a parallel thread to handle calls to the JSONparser.
+	 * This thread is used to search for items that meet the criteria of the
+	 * handled intent sent from main by searching for keywords.
+	 */
 	private class searchList extends AsyncTask<String, String, JSONArray> {
 
 		@Override
@@ -122,8 +133,6 @@ public class SearchActivity extends Activity {
 			JSONparser jparser = new JSONparser();
 
 			companies = jparser.search(query);
-
-			System.out.println("background"); // debugging
 			return companies;
 		}
 
@@ -133,6 +142,67 @@ public class SearchActivity extends Activity {
 
 		}
 
+	}
+
+	@Override
+	public boolean onDown(MotionEvent e) {
+		// TODO Auto-generated method stub
+		return true;
+	}
+
+	@Override
+	public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
+			float velocityY) {
+		boolean result = false;
+		try {
+			float diffY = e2.getY() - e1.getY();
+			float diffX = e2.getX() - e1.getX();
+			if (Math.abs(diffX) > Math.abs(diffY)) {
+				if (Math.abs(diffX) > SWIPE_THRESHOLD
+						&& Math.abs(velocityX) > SWIPE_VELOCITY_THRESHOLD) {
+					if (diffX > 0) {
+						System.out.println("RIGHT");
+					} else {
+						System.out.println("LEFT");
+					}
+				}
+			}
+
+		} catch (Exception exception) {
+			exception.printStackTrace();
+		}
+		return result;
+	}
+
+	@Override
+	public void onLongPress(MotionEvent e) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX,
+			float distanceY) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public void onShowPress(MotionEvent e) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public boolean onSingleTapUp(MotionEvent e) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean dispatchTouchEvent(MotionEvent ev) {
+		super.dispatchTouchEvent(ev);
+		return detector.onTouchEvent(ev);
 	}
 
 }

@@ -11,5 +11,13 @@
     <string name="title_activity_search">SearchActivity</string>
     <string name="hello_world">Hello world!</string>
     <string name="title_activity_company_details">CompanyDetails</string>
+    <string name="Price">Price</string>
+    <string name="Change">Change</string>
+    <string name="PrevClose">PrevClose</string>
+    <string name="Time">Timestapm</string>
+    <string name="Open">Open</string>
+    <string name="High">High</string>
+    <string name="Low">Low</string>
+    <string name="title_activity_compare">Comparison</string>
 
 </resources>

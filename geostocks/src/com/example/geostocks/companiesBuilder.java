@@ -8,6 +8,7 @@ import org.json.JSONObject;
 
 /* companiesBuilder.
  * Made by: Joakim Bajoul Kakaei (881129-0298)
+ * 
  * Description: This class is created for a couple of reasons, 
  * the main one to create a company-object from a JSONObject, 
  * parsing "only" the information necessary for the lisviews.

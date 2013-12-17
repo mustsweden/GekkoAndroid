@@ -5,8 +5,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
@@ -29,11 +27,12 @@ public class JSONparser {
 	static String json = "";
 
 	/*
-	 * Takes a search string and looks up the webservice for any JSONArray that
+	 * Takes a search string and looks up the webservice for a JSONArray with
+	 * only objects that meet the search criteria.
 	 */
 	public JSONArray search(String search) {
 		try {
-			URLEncoder.encode(search, "UTF-8");
+			URLEncoder.encode(search, "UTF-8"); //Encodes the URL to a correct string.
 			System.out.println("SEARCH "
 					+ "http://dev.semprog.se/Gekko.svc/Search/" + search);
 			return readJson("http://dev.semprog.se/Gekko.svc/Search/" + search);
@@ -48,7 +47,7 @@ public class JSONparser {
 		}
 
 	}
-
+	
 	private static String readAll(Reader rd) throws IOException {
 		StringBuilder sb = new StringBuilder();
 		int cp;
@@ -69,7 +68,6 @@ public class JSONparser {
 			BufferedReader rd = new BufferedReader(new InputStreamReader(is,
 					Charset.forName("UTF-8")));
 			String jsonText = readAll(rd);
-			System.out.println("JSONTEXT " + jsonText);
 			JSONArray json = new JSONArray(jsonText);
 			return json;
 		} finally {

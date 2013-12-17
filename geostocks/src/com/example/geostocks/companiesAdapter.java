@@ -2,7 +2,6 @@ package com.example.geostocks;
 
 import java.util.ArrayList;
 
-import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -13,56 +12,95 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 /* companiesAdapter.
  * Made by: Joakim Bajoul Kakaei (881129-0298)
  * Description: Since the listview we have decided to use has multiple objects on each row, 
- * the listview's adapter needs to be customized to meet those requirements. 
- * This class may be revised later on (to add or remove objects from the rowItemObjects).
+ * the listview's adapter needs to be customized to meet those requirements.
+ * The adapter is also adapted to fit multiple activities needs; ergo it's recycleable.
  */
 public class companiesAdapter extends ArrayAdapter<companiesBuilder> implements
 		OnClickListener {
 	private final int companiesBuilderResource;
 	private ArrayList<companiesBuilder> companies;
 	private Context Viewcontext;
+	Toast toast;
 
+	/*
+	 * Constructor which initilizes variables that are used throughout the
+	 * activities.
+	 */
 	public companiesAdapter(final Context context,
 			final int companiesBuilderResource) {
 		super(context, 0);
 		this.companiesBuilderResource = companiesBuilderResource;
 		companies = new ArrayList<companiesBuilder>();
 		this.Viewcontext = context;
+
 	}
 
+	/*
+	 * Adds a company object to the singleton checkedCompanies.
+	 */
 	public void addChecked(companiesBuilder row) {
 		System.out.println(row.getSymbol());
 		checkedCompanies.INSTANCE.set(row);
 	}
 
+	/*
+	 * Removes the specified company object from the singleton.
+	 */
 	public void removeChecked(companiesBuilder built) {
 		checkedCompanies.INSTANCE.remove(built);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see android.widget.ArrayAdapter#add(java.lang.Object)
+	 */
 	public void add(companiesBuilder row) {
 		companies.add(row);
 		notifyDataSetChanged();
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see android.widget.ArrayAdapter#getCount()
+	 */
 	@Override
 	public int getCount() {
 		return companies.size();
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see android.widget.ArrayAdapter#getItem(int)
+	 */
 	@Override
 	public companiesBuilder getItem(int i) {
 		return companies.get(i);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see android.widget.ArrayAdapter#getItemId(int)
+	 */
 	@Override
 	public long getItemId(int i) {
 		return i;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see android.widget.ArrayAdapter#getView(int, android.view.View,
+	 * android.view.ViewGroup)
+	 */
 	@Override
 	public View getView(final int position, final View convertView,
 			final ViewGroup parent) {
@@ -132,11 +170,13 @@ public class companiesAdapter extends ArrayAdapter<companiesBuilder> implements
 				Intent intent = new Intent(Viewcontext, CompanyDetails.class);
 				intent.putExtra("Symbol", row.getSymbol());
 				Viewcontext.startActivity(intent);
-				new AlertDialog.Builder(getContext()).setTitle(row.getName())
-						.show();
 			}
 
 		});
+		/*
+		 * Add or remove company object to the singleton by using the adapter's
+		 * setter methods.
+		 */
 		rowItem.imageButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View button) {
