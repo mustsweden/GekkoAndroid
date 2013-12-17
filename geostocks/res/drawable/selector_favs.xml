@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--  Selector to help handle clicks (add / remove) favorite in the singleton list. -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:drawable="@drawable/ic_favoritermv" android:state_selected="true"/>
+    <item android:drawable="@drawable/ic_favoriteadd" android:state_selected="false"/>
+    <item android:drawable="@drawable/ic_favoritermv"/>
+
+</selector>

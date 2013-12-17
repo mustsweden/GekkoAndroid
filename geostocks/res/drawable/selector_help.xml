@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Selector helper to handle adding / removing items by clicking the adapter's imagebutton -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:drawable="@drawable/ic_added_button" android:state_selected="true"/>
+    <item android:drawable="@drawable/ic_add_button" android:state_selected="false"/>
+    <item android:drawable="@drawable/ic_add_button"/>
+
+</selector>
