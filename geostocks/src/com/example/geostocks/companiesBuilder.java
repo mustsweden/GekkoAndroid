@@ -1,7 +1,11 @@
 package com.example.geostocks;
 
+import java.sql.Date;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.Locale;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -45,9 +49,8 @@ public class companiesBuilder {
 	private String prevClose;
 
 	public companiesBuilder(JSONObject job) {
-		System.out.println("CompaniesBuilder");
 		try {
-			timestamp = parseTime(job.getString("Datetime"));
+			timestamp = fixDate2(job.getString("Datetime")).toString();
 			prevClose = job.getString("PreviousClose");
 			dayMin = job.getString("DayMinPrice");
 			dayMax = job.getString("DayMaxPrice");
@@ -61,7 +64,7 @@ public class companiesBuilder {
 																	// some
 																	// companynames.
 			price = job.getString(TAG_PRICE);
-			symbol = job.getString(TAG_SYMBOL);
+			symbol = job.getString(TAG_SYMBOL).trim();
 			percent = job.getString(TAG_PERCENT);
 			change = job.getString(TAG_CHANGE);
 
@@ -72,15 +75,22 @@ public class companiesBuilder {
 
 	}
 
-	private String parseTime(String timestamp) {
-		String format = timestamp.substring(timestamp.indexOf("(") + 1,
-				timestamp.indexOf("+"));
-		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-		Long time = Long.parseLong(format) * 1000;
-		final Calendar cal = Calendar.getInstance();
-		cal.setTimeInMillis(time);
-		return sdf.format(cal.getTime());
-
+	public String fixDate2(String jsonDate) {
+		String timestamp = jsonDate.split("\\(")[1].split("\\+")[0];
+		long timestampp = Long.parseLong(timestamp);
+		java.util.Date date = new Date(timestampp);
+		Calendar cal = new GregorianCalendar();
+		SimpleDateFormat dd = new SimpleDateFormat("EEE, d MMM yy", Locale.ENGLISH);
+		dd.setCalendar(cal);
+		dd.format(date);
+		String formattedDate = dd.format(date);
+		try {
+			date = dd.parse(formattedDate);
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return formattedDate;
 	}
 
 	/*

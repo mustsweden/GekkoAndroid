@@ -19,5 +19,7 @@
     <string name="High">High</string>
     <string name="Low">Low</string>
     <string name="title_activity_compare">Comparison</string>
+    <string name="title_activity_favorite_view">FavoriteView</string>
+    <string name="tab">\u0009</string>
 
 </resources>

@@ -9,6 +9,7 @@ import org.json.JSONException;
 
 import android.app.SearchManager;
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
@@ -183,9 +184,10 @@ public class MainActivity extends FragmentActivity implements OnGestureListener 
 			openSearch(); // when searchbutton is clicked, it will start the
 							// opensearch method.
 			return true;
-		case R.id.action_settings:
-			// openSettings();
-			return true;
+		case R.id.action_favorites:
+
+			Intent intent = new Intent(this, FavoriteView.class);
+			this.startActivity(intent);
 		default:
 			return super.onOptionsItemSelected(item);
 		}
@@ -238,7 +240,6 @@ public class MainActivity extends FragmentActivity implements OnGestureListener 
 	 */
 	@Override
 	public boolean onDown(MotionEvent e) {
-		// TODO Auto-generated method stub
 		return true;
 	}
 
@@ -253,9 +254,12 @@ public class MainActivity extends FragmentActivity implements OnGestureListener 
 				if (Math.abs(diffX) > SWIPE_THRESHOLD
 						&& Math.abs(velocityX) > SWIPE_VELOCITY_THRESHOLD) {
 					if (diffX > 0) {
-						System.out.println("RIGHT"); //debuging 
+						System.out.println("RIGHT"); // debuging
 					} else {
-						System.out.println("LEFT");  //debugging
+						Intent intent = new Intent(MainActivity.this,
+								Compare.class);
+						MainActivity.this.startActivity(intent);
+						System.out.println("LEFT"); // debugging
 					}
 				}
 			}

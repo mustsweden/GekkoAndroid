@@ -3,19 +3,18 @@ activity_company_details
 	 Made by: Joakim Bajoul Kakaei (881129-0298) 
 	 Description: The detailed view's layout. 
 	 Handles the complete layout by using a parent linearlayout as well as a 
-	 relative layout as a child to cleanly format the textviews.
+	 relative layout as a child to cleanly format the textviews.
 -->
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/thelayoutthatfuckedup"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical" >
 
     <RelativeLayout
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:paddingLeft="16dp"
-        android:paddingRight="16dp" >
+        android:layout_height="fill_parent" >
 
         <ImageButton
             android:id="@+id/add_fav"
@@ -32,6 +31,7 @@ activity_company_details
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
+            android:layout_marginTop="20dp"
             android:gravity="center_vertical"
             android:text="@string/Price"
             android:textColor="#FFFFFF"
@@ -42,8 +42,8 @@ activity_company_details
             android:id="@+id/Change"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="5dp"
-            android:layout_marginTop="6dp"
+            android:layout_marginLeft="0dp"
+            android:layout_marginTop="25dp"
             android:layout_toRightOf="@id/Price"
             android:text="@string/Change" />
 
@@ -52,7 +52,7 @@ activity_company_details
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/Change"
-            android:layout_marginLeft="5dp"
+            android:layout_marginLeft="0dp"
             android:layout_marginTop="-5dp"
             android:layout_toRightOf="@id/Price"
             android:text="@string/PrevClose" />
@@ -61,8 +61,10 @@ activity_company_details
             android:id="@+id/Time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
             android:layout_below="@id/Price"
-            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="12dp"
+            android:layout_marginTop="-10dp"
             android:text="@string/Time" />
     </RelativeLayout>
 
@@ -77,7 +79,8 @@ activity_company_details
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="left"
-            android:text="@string/Open" />
+            android:text="@string/Open"
+            android:textSize="18sp" />
 
         <TextView
             android:id="@+id/High"
@@ -85,7 +88,8 @@ activity_company_details
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center|center_vertical"
-            android:text="@string/High" />
+            android:text="@string/High"
+            android:textSize="18sp" />
 
         <TextView
             android:id="@+id/Low"
@@ -93,10 +97,12 @@ activity_company_details
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="right"
-            android:text="@string/Low" />
+            android:text="@string/Low"
+            android:textSize="18sp" />
     </LinearLayout>
 
     <ListView
+        android:paddingTop="20dp"
         android:id="@+id/news_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

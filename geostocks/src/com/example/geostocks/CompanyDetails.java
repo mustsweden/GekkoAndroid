@@ -1,21 +1,33 @@
 package com.example.geostocks;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
+import android.text.style.ForegroundColorSpan;
+import android.text.style.StyleSpan;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,11 +40,14 @@ import android.widget.Toast;
  */
 public class CompanyDetails extends Activity {
 	JSONObject companyObj = new JSONObject();
+	JSONArray news = new JSONArray();
 	String symbol;
 	companiesBuilder company;
+	private List<NewsBuilder> allNews = new ArrayList<NewsBuilder>();
 	ImageButton img;
 	Toast toast;
 	TextView toastText;
+	Menu m;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -71,7 +86,36 @@ public class CompanyDetails extends Activity {
 		}
 
 		textualSetup();
-		this.setTitle(company.getName() + "::" + company.getSymbol());
+		if (news != null) {
+
+			this.setTitle(company.getName() + "::" + company.getSymbol());
+			final ListView newsList = (ListView) findViewById(R.id.news_list);
+			final NewsAdapter newAdp = new NewsAdapter(this,
+					R.layout.newslist_layout);
+
+			/*
+			 * a loop to create companyBuilder-objects from the JSONArray and
+			 * then add those objects to an ArrayList (allCompanies).
+			 */
+			for (int i = 0; news.length() > i; i++) {
+				try {
+					allNews.add(new NewsBuilder(news.getJSONObject(i)));
+				} catch (JSONException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+
+				}
+			}
+			/*
+			 * this loop goes through every company that has been built and adds
+			 * it to the custom listview adapter.
+			 */
+
+			for (NewsBuilder built : allNews) {
+				newAdp.add(built);
+			}
+			newsList.setAdapter(newAdp);
+		}
 	}
 
 	@Override
@@ -91,6 +135,10 @@ public class CompanyDetails extends Activity {
 	 * well as starts binding them together.
 	 */
 	private void textualSetup() {
+		final ForegroundColorSpan fcs = new ForegroundColorSpan(Color.rgb(255,
+				255, 255));
+		final StyleSpan ss = new StyleSpan(android.graphics.Typeface.BOLD);
+		SpannableStringBuilder sb;
 
 		TextView price = new TextView(this);
 		TextView change = new TextView(this);
@@ -109,14 +157,44 @@ public class CompanyDetails extends Activity {
 		low = (TextView) this.findViewById(R.id.Low);
 
 		// Spannable textToSpan = new SpannableString();
-		price.setText(company.getPrice());
-		change.setText(company.getPercent());
-		prevClose.setText(company.getPrev());
-		timestamp.setText(company.getTime());
-		open.setText("Open" + "\t" + company.getPrev());
-		high.setText("High" + "\t" + company.getMax());
-		low.setText("Low" + "\t" + company.getMin());
-		img.setSelected(false);
+		price.setText(company.getPrice() + "$");
+		if (Double.parseDouble(company.getChange()) < 0) {
+			change.setText(company.getPercent() + "%");
+			prevClose.setText("-" + company.getPrev() + " USD");
+			change.setTextColor(Color.parseColor("#E51400"));
+			prevClose.setTextColor(Color.parseColor("#E51400"));
+		} else if (Double.parseDouble(company.getChange()) > 0) {
+			change.setText("+" + company.getPercent() + "%");
+			prevClose.setText("+" + company.getPrev() + " USD");
+			change.setTextColor(Color.parseColor("#339933"));
+			prevClose.setTextColor(Color.parseColor("#339933"));
+		} else {
+			change.setText(company.getPercent() + "%");
+			prevClose.setText(company.getPrev());
+		}
+		timestamp.setText("Trading: " + company.getTime());
+		sb = new SpannableStringBuilder("Open:  " + company.getPrev());
+		sb.setSpan(fcs, 0, 5, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+		sb.setSpan(ss, 0, 5, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+		open.setText(sb);
+
+		sb = new SpannableStringBuilder("High:  " + company.getMax());
+		sb.setSpan(fcs, 0, 5, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+		sb.setSpan(ss, 0, 5, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+		high.setText(sb);
+
+		sb = new SpannableStringBuilder("Low:  " + company.getMin());
+		sb.setSpan(fcs, 0, 5, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+		sb.setSpan(ss, 0, 5, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+		low.setText(sb);
+
+		for (int i = 0; i < FavoriteCompanies.INSTANCE.get().size(); i++) {
+			if (FavoriteCompanies.INSTANCE.get().get(i).getSymbol()
+					.equals(company.getSymbol())) {
+				System.out.println("DONE");
+				img.setSelected(true);
+			}
+		}
 		img.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View button) {
@@ -136,20 +214,13 @@ public class CompanyDetails extends Activity {
 		});
 	}
 
-	public void addFav(companiesBuilder row) {
-		System.out.println(row.getSymbol());
-		FavoriteCompanies.INSTANCE.set(row);
+	public void addFav(companiesBuilder company) {
+		System.out.println(company.getSymbol());
+		FavoriteCompanies.INSTANCE.set(company);
 	}
 
 	public void removeFav(companiesBuilder built) {
 		FavoriteCompanies.INSTANCE.remove(built);
-	}
-
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.company_details, menu);
-		return true;
 	}
 
 	/*
@@ -168,6 +239,7 @@ public class CompanyDetails extends Activity {
 			JSONparser jparser = new JSONparser();
 			try {
 				companyObj = jparser.details(symbol);
+				news = jparser.news(symbol);
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -178,6 +250,33 @@ public class CompanyDetails extends Activity {
 		@Override
 		protected void onPostExecute(JSONObject job) {
 
+		}
+
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		m = menu; // adds a reference to the variable m (menu).
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.main, menu);
+		return (super.onCreateOptionsMenu(menu)); // returns the super for
+													// efficiency.
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see android.app.Activity#onOptionsItemSelected(android.view.MenuItem)
+	 */
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case R.id.action_favorites:
+
+			Intent intent = new Intent(this, FavoriteView.class);
+			this.startActivity(intent);
+		default:
+			return super.onOptionsItemSelected(item);
 		}
 
 	}

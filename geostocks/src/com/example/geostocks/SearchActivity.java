@@ -15,9 +15,17 @@ import android.os.Bundle;
 import android.view.GestureDetector.OnGestureListener;
 import android.view.View.OnTouchListener;
 import android.view.GestureDetector;
+import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 /*
  * SearchActivity:
@@ -32,6 +40,7 @@ public class SearchActivity extends Activity implements OnGestureListener {
 	JSONArray companies;
 	String query;
 	GestureDetector detector;
+	Menu m;
 	/*
 	 * Handle the threshold.
 	 */
@@ -71,16 +80,31 @@ public class SearchActivity extends Activity implements OnGestureListener {
 		/*
 		 * a loop to create companyBuilder-objects from the JSONArray and then
 		 * add those objects to an ArrayList (allCompanies).
-		 */
-		for (int i = 0; companies.length() > i; i++) {
-			try {
-				allCompanies.add(new companiesBuilder(companies
-						.getJSONObject(i)));
-			} catch (JSONException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+		 */try {
+			for (int i = 0; companies.length() > i; i++) {
+				try {
+					allCompanies.add(new companiesBuilder(companies
+							.getJSONObject(i)));
+				} catch (JSONException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 
+				}
 			}
+		} catch (NullPointerException e) {
+			LayoutInflater inflater = getLayoutInflater();
+			Toast toast = new Toast(this);
+			View viewLayout = inflater.inflate(R.layout.cust_toast,
+					(ViewGroup) findViewById(R.id.cust_toast));
+			TextView toastText = (TextView) viewLayout
+					.findViewById(R.id.toastText);
+			toastText.setText("The search " + "'" + query + "'"
+					+ " did not find any results!");
+			toast.setGravity(Gravity.CENTER, 0, 0);
+			toast.setDuration(Toast.LENGTH_SHORT);
+			toast.setView(viewLayout);
+			toast.show();
+			this.finish();
 		}
 		/*
 		 * this loop goes through every company that has been built and adds it
@@ -117,6 +141,33 @@ public class SearchActivity extends Activity implements OnGestureListener {
 			query = intent.getStringExtra(SearchManager.QUERY);
 			// use the query to search your data somehow
 		}
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		m = menu; // adds a reference to the variable m (menu).
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.main, menu);
+		return (super.onCreateOptionsMenu(menu)); // returns the super for
+													// efficiency.
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see android.app.Activity#onOptionsItemSelected(android.view.MenuItem)
+	 */
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case R.id.action_favorites:
+
+			Intent intent = new Intent(this, FavoriteView.class);
+			this.startActivity(intent);
+		default:
+			return super.onOptionsItemSelected(item);
+		}
+
 	}
 
 	/*
@@ -203,6 +254,6 @@ public class SearchActivity extends Activity implements OnGestureListener {
 	public boolean dispatchTouchEvent(MotionEvent ev) {
 		super.dispatchTouchEvent(ev);
 		return detector.onTouchEvent(ev);
-	}
+	}	
 
 }

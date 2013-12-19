@@ -32,9 +32,8 @@ public class JSONparser {
 	 */
 	public JSONArray search(String search) {
 		try {
-			URLEncoder.encode(search, "UTF-8"); //Encodes the URL to a correct string.
-			System.out.println("SEARCH "
-					+ "http://dev.semprog.se/Gekko.svc/Search/" + search);
+			URLEncoder.encode(search, "UTF-8"); // Encodes the URL to a correct
+												// string.
 			return readJson("http://dev.semprog.se/Gekko.svc/Search/" + search);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -47,22 +46,20 @@ public class JSONparser {
 		}
 
 	}
-	
+
 	private static String readAll(Reader rd) throws IOException {
 		StringBuilder sb = new StringBuilder();
-		int cp;
-		while ((cp = rd.read()) != -1) {
+		int index;
+		while ((index = rd.read()) != -1) {
 
-			sb.append((char) cp);
+			sb.append((char) index);
 		}
 		return sb.toString();
 	}
 
 	private static JSONArray readJson(String search) throws IOException,
 			JSONException {
-		System.out.println("BIGSEARCH " + search);
 		InputStream is = new URL(search.replace(" ", "%20")).openStream();
-
 		try {
 
 			BufferedReader rd = new BufferedReader(new InputStreamReader(is,
@@ -88,14 +85,39 @@ public class JSONparser {
 		}
 	}
 
+	public JSONArray news(String symbol) throws IOException {
+		symbol.replace(" ", "%20");
+		symbol = "http://dev.semprog.se/Gekko.svc/News/" + symbol + "/" + 10;
+		URLEncoder.encode(symbol.trim(), "UTF-8");
+		System.out.println("OUTPUT " + symbol);
+		InputStream is = new URL(symbol).openStream();
+		try {
+			BufferedReader rd = new BufferedReader(new InputStreamReader(is,
+					Charset.forName("UTF-8")));
+			String jsonText = readAll(rd);
+			JSONArray json = new JSONArray(jsonText);
+			return json;
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		} finally {
+			is.close();
+		}
+	}
+
 	public JSONObject details(String symbol) throws IOException {
+		System.out.println("OUT " + symbol +"x");
 		symbol = "http://dev.semprog.se/Gekko.svc/GetInfo/" + symbol;
 		InputStream is = new URL(symbol).openStream();
 		try {
 			BufferedReader rd = new BufferedReader(new InputStreamReader(is,
 					Charset.forName("UTF-8")));
 			String jsonText = readAll(rd);
-			System.out.println("JSONTEXT " + jsonText);
 			JSONObject json = new JSONObject(jsonText);
 			return json;
 		} catch (JSONException e) {

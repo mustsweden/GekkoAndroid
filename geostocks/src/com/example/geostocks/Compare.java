@@ -1,8 +1,12 @@
 package com.example.geostocks;
 
-import android.os.Bundle;
 import android.app.Activity;
+import android.content.Intent;
+import android.os.Bundle;
 import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+
 /*
  * Compare:
  * 
@@ -12,7 +16,7 @@ import android.view.Menu;
  * To be updated.
  */
 public class Compare extends Activity {
-
+	Menu m;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -21,9 +25,29 @@ public class Compare extends Activity {
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.compare, menu);
-		return true;
+		m = menu; // adds a reference to the variable m (menu).
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.main, menu);
+		return (super.onCreateOptionsMenu(menu)); // returns the super for
+													// efficiency.
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see android.app.Activity#onOptionsItemSelected(android.view.MenuItem)
+	 */
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case R.id.action_favorites:
+
+			Intent intent = new Intent(this, FavoriteView.class);
+			this.startActivity(intent);
+		default:
+			return super.onOptionsItemSelected(item);
+		}
+
 	}
 
 }
