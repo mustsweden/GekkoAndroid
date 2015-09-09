@@ -56,7 +56,10 @@ public class JSONparser {
 		}
 		return sb.toString();
 	}
-
+	/* 
+	Returns a JSONArray of the search query by contacting the webservice with the query's symbol. 
+	Uses JSONparser.readAll
+	*/
 	private static JSONArray readJson(String search) throws IOException,
 			JSONException {
 		InputStream is = new URL(search.replace(" ", "%20")).openStream();
@@ -71,7 +74,7 @@ public class JSONparser {
 			is.close();
 		}
 	}
-
+	/* Returns a JSONArray that contains the top 10 increasing stocks */
 	public JSONArray topCompanies() {
 		try {
 			return readJson("http://dev.semprog.se/Gekko.svc/GetTop/10");
@@ -85,6 +88,9 @@ public class JSONparser {
 		}
 	}
 
+/*
+Returns an array of JSONojbects containing the most recent news of the queried company
+*/
 	public JSONArray news(String symbol) throws IOException {
 		symbol.replace(" ", "%20");
 		symbol = "http://dev.semprog.se/Gekko.svc/News/" + symbol + "/" + 10;
@@ -109,6 +115,10 @@ public class JSONparser {
 			is.close();
 		}
 	}
+
+/*
+Return the JSONObject of the search query (the clicked object in the listview)
+*/
 
 	public JSONObject details(String symbol) throws IOException {
 		System.out.println("OUT " + symbol +"x");
